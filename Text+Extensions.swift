@@ -82,6 +82,29 @@ struct TextFlowLayout: View {
     }
 }
 
+/// One `RichTextBlock` is like a line or paragraph.
+struct RichTextBlock: Identifiable {
+    let id = UUID()
+    var components: [RichTextComponent]
+}
+
+struct RichParagraphView: View {
+    var blocks: [RichTextBlock]
+    var lineSpacing: CGFloat = 6
+    var alignment: TextAlignment = .leading
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: lineSpacing) {
+            ForEach(blocks) { block in
+                TextFlowLayout(components: block.components)
+            }
+        }
+        .multilineTextAlignment(alignment)
+    }
+}
+
+
+
 #Preview {
   RichParagraph(
     components: [
@@ -94,4 +117,19 @@ struct TextFlowLayout: View {
     lineSpacing: 6,
     alignment: .leading
 )
+
+    RichParagraphView(blocks: [
+    RichTextBlock(components: [
+        .text("By continuing, you accept the "),
+        .link("Terms of Service", action: { print("Tapped Terms") }),
+        .text(" and "),
+        .link("Privacy Policy", action: { print("Tapped Privacy") }),
+        .text(".")
+    ]),
+    RichTextBlock(components: [
+        .text("You can also "),
+        .link("contact support", style: .link, action: { print("Tapped support") }),
+        .text(" for assistance.")
+    ])
+])
 }
